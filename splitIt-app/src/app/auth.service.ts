@@ -3,12 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private baseUrl = 'http://localhost:3000/api';
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+  ) {
     window.addEventListener('onload', () => {
       localStorage.removeItem('token');
     });
@@ -23,18 +26,18 @@ export class AuthService {
   }
 
   isAuthenticated() {
-    return !!localStorage.getItem('token')
+    return !!localStorage.getItem('token');
   }
 
   logout() {
-    localStorage.removeItem('token')
-    localStorage.removeItem('userEmail')
-    this.router.navigate(['/login'])
+    localStorage.removeItem('token');
+    localStorage.removeItem('userEmail');
+    this.router.navigate(['/login']);
   }
 
-  getCurrentUser(){
+  getCurrentUser() {
     const userEmail = localStorage.getItem('userEmail');
-    if (userEmail){
+    if (userEmail) {
       return userEmail;
     }
     return this.logout();
@@ -43,6 +46,4 @@ export class AuthService {
   getToken() {
     return localStorage.getItem('token');
   }
-
 }
-

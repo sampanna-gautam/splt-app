@@ -3,13 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsersService {
-
   private baseUrl = 'http://localhost:3000/api/users';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getUserGroups(userEmail: string): Observable<any> {
     return this.http.get(`${this.baseUrl}/${userEmail}/groups`);

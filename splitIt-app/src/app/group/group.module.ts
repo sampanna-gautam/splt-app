@@ -5,13 +5,8 @@ import { DatePipe } from '@angular/common';
 import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
-  declarations: [
-  ],
-  imports: [
-    CommonModule,
-    GroupRoutingModule,
-    MatDialogModule,
-  ],
+  declarations: [],
+  imports: [CommonModule, GroupRoutingModule, MatDialogModule],
   providers: [DatePipe],
 })
-export class GroupModule { }
+export class GroupModule {}

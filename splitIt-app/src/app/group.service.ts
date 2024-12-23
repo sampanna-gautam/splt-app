@@ -11,21 +11,24 @@ import { UsersService } from './users.service';
 export class GroupService {
   private groupUrl = 'http://localhost:3000/api/groups';
 
-  constructor(private http: HttpClient, private authService: AuthService, private usersService: UsersService) { }
+  constructor(
+    private http: HttpClient,
+    private authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   createGroup(groupData: any): Observable<Group> {
     groupData = {
       ...groupData,
-      creatorEmailId : this.authService.getCurrentUser()
-    }
+      creatorEmailId: this.authService.getCurrentUser(),
+    };
     return this.http.post<Group>(`${this.groupUrl}`, groupData);
   }
-  
+
   addUserToGroup(groupId: string, userEmail: string): Observable<any> {
-  
     return this.http.post(`${this.groupUrl}/${groupId}/addUserByEmail`, {
-      userEmail
-    })
+      userEmail,
+    });
   }
 
   getGroupDetailsWithMembers(groupId: string): Observable<any> {
@@ -35,20 +38,23 @@ export class GroupService {
           map((members) => ({
             ...groupDetails,
             members: members,
-            balancesWithNames: this.mapBalancesWithNames(groupDetails.balance, members),
-          }))
-        )
-      )
+            balancesWithNames: this.mapBalancesWithNames(
+              groupDetails.balance,
+              members,
+            ),
+          })),
+        ),
+      ),
     );
   }
 
-  getGroupDetails(groupId: string): Observable<Group>{
-    return this.http.get<Group>(`${this.groupUrl}/${groupId}`)
+  getGroupDetails(groupId: string): Observable<Group> {
+    return this.http.get<Group>(`${this.groupUrl}/${groupId}`);
   }
 
   private fetchAndProcessMembers(memberDetails: any[]): Observable<any[]> {
     const memberDetailObservables = memberDetails.map((member) =>
-      this.usersService.getUserDetails(member.memberId)
+      this.usersService.getUserDetails(member.memberId),
     );
 
     return forkJoin(memberDetailObservables).pipe(
@@ -58,13 +64,15 @@ export class GroupService {
           id: response.id,
           email: response.email,
           balance: memberDetails[index].memberBalance,
-        }))
-      )
+        })),
+      ),
     );
   }
 
   private mapBalancesWithNames(balanceItems: any[], members: any[]): any[] {
-    const memberDetailsMap = new Map(members.map((member) => [member.id, member.name]));
+    const memberDetailsMap = new Map(
+      members.map((member) => [member.id, member.name]),
+    );
 
     return balanceItems.map((balanceItem: any) => ({
       from: memberDetailsMap.get(balanceItem.from) || balanceItem.from,
@@ -75,12 +83,16 @@ export class GroupService {
 
   getMembers(groupId: string): Observable<any[]> {
     return this.getGroupDetails(groupId).pipe(
-      switchMap((groupDetails: any) => this.fetchAndProcessMembers(groupDetails.members))
+      switchMap((groupDetails: any) =>
+        this.fetchAndProcessMembers(groupDetails.members),
+      ),
     );
   }
 
   settleBalance(groupId: string, transactionId: string): Observable<any> {
-    return this.http.post<any>(`${this.groupUrl}/${groupId}/transaction/${transactionId}`, {})
-  }  
-  
+    return this.http.post<any>(
+      `${this.groupUrl}/${groupId}/transaction/${transactionId}`,
+      {},
+    );
+  }
 }

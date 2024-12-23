@@ -5,17 +5,20 @@ import { UsersService } from '../users.service';
 @Component({
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
-  styleUrls: ['./navbar.component.css']
+  styleUrls: ['./navbar.component.css'],
 })
 export class NavbarComponent {
   _user: string | void = '';
   _userDetails: any;
 
-  constructor(public authService: AuthService, public usersService: UsersService) {
-    this._user = this.authService.getCurrentUser()!
+  constructor(
+    public authService: AuthService,
+    public usersService: UsersService,
+  ) {
+    this._user = this.authService.getCurrentUser()!;
 
-    if(!this._user){
-      this.authService.logout()
+    if (!this._user) {
+      this.authService.logout();
     }
     this.usersService.getUserDetailsByEmail(this._user!).subscribe({
       next: (res) => {
@@ -23,9 +26,8 @@ export class NavbarComponent {
       },
       error: (error) => {
         console.error('Error fetching user details:', error);
-      }
+      },
     });
-    
   }
 
   onLogout() {

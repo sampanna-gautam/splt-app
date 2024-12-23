@@ -8,7 +8,7 @@ import { UsersService } from 'src/app/users.service';
 @Component({
   selector: 'app-list-balance',
   templateUrl: './list-balance.component.html',
-  styleUrls: ['./list-balance.component.css']
+  styleUrls: ['./list-balance.component.css'],
 })
 export class ListBalanceComponent {
   groupId: string = '';
@@ -24,18 +24,21 @@ export class ListBalanceComponent {
     private groupService: GroupService,
     private usersService: UsersService,
     private route: ActivatedRoute,
-    private authService: AuthService) { }
+    private authService: AuthService,
+  ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.groupId = params['groupId'];
-      this.currentUser = this.usersService.getUserDetailsByEmail(this.authService.getCurrentUser() || '').subscribe((response) => {
-        this.currentUser = response
-      })
-      this.fetchGroupDetails()
+      this.currentUser = this.usersService
+        .getUserDetailsByEmail(this.authService.getCurrentUser() || '')
+        .subscribe((response) => {
+          this.currentUser = response;
+        });
+      this.fetchGroupDetails();
     });
   }
-  
+
   private fetchGroupDetails() {
     this.groupService.getGroupDetailsWithMembers(this.groupId).subscribe({
       next: (groupDetails) => {
@@ -46,9 +49,8 @@ export class ListBalanceComponent {
           if (member.email == this.currentUser.email) {
             this.currentUser.balance = member.balance;
           }
-        })
-        this.loading = false; 
-                
+        });
+        this.loading = false;
       },
       error: (error) => {
         console.error('Error fetching group details', error);
@@ -56,9 +58,10 @@ export class ListBalanceComponent {
     });
   }
 
-
   confirmSettleBalance(index: number): void {
-    const confirmed = window.confirm('Are you sure you want to settle this balance?');
+    const confirmed = window.confirm(
+      'Are you sure you want to settle this balance?',
+    );
     if (confirmed) {
       this.loading = true;
       this.settleSelectedBalance(index);
@@ -69,12 +72,12 @@ export class ListBalanceComponent {
     const transactionId = this.groupDetails.balance[index]._id;
     this.groupService.settleBalance(this.groupId, transactionId).subscribe({
       next: (response) => {
-        console.log(response.message)
-        this.fetchGroupDetails()
+        console.log(response.message);
+        this.fetchGroupDetails();
       },
       error: (error) => {
         console.error('Error settling balance:', error);
-      }
+      },
     });
   }
 }

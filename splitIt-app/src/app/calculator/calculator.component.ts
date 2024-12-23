@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-calculator',
   templateUrl: './calculator.component.html',
-  styleUrls: ['./calculator.component.css']
+  styleUrls: ['./calculator.component.css'],
 })
 export class CalculatorComponent {
   display = '0';
@@ -19,8 +19,7 @@ export class CalculatorComponent {
       if (this.operator === '=') {
         this.display = digit;
         this.operator = '';
-      }
-      else {
+      } else {
         this.display += digit;
       }
     }
@@ -48,7 +47,7 @@ export class CalculatorComponent {
     this.currentInput = '';
     this.operator = '';
 
-    console.log(this.operator)
+    console.log(this.operator);
     this.previousValue = '';
   }
 
@@ -59,8 +58,7 @@ export class CalculatorComponent {
   onClearEntryClick() {
     if (this.display.length > 1) {
       this.display = this.display.slice(0, -1);
-    }
-    else{
+    } else {
       this.display = '0';
     }
   }
@@ -82,11 +80,20 @@ export class CalculatorComponent {
         this.display = (previousValue / currentValue).toFixed(2).toString();
         break;
       case '%':
-        this.display = (previousValue * (currentValue/100)).toFixed(2).toString();
+        this.display = (previousValue * (currentValue / 100))
+          .toFixed(2)
+          .toString();
         break;
       default:
         break;
     }
-    this.lastOperation = this.previousValue + " " + this.operator + " " + currentValue.toString() + " = " + this.display;
+    this.lastOperation =
+      this.previousValue +
+      ' ' +
+      this.operator +
+      ' ' +
+      currentValue.toString() +
+      ' = ' +
+      this.display;
   }
 }

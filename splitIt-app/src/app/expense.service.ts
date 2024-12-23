@@ -10,11 +10,14 @@ export class ExpenseService {
   private expensesUrl = 'http://localhost:3000/api/expenses';
   private groupUrl = 'http://localhost:3000/api/groups';
 
-  constructor(private http: HttpClient, private groupService: GroupService) { }
+  constructor(
+    private http: HttpClient,
+    private groupService: GroupService,
+  ) {}
 
   addExpense(expenseData: any): Observable<any> {
-    return this.http.post(`${this.expensesUrl}`, expenseData)
-  } 
+    return this.http.post(`${this.expensesUrl}`, expenseData);
+  }
 
   getExpensesOfGroup(groupId: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.groupUrl}/${groupId}/expenses`);
@@ -25,10 +28,16 @@ export class ExpenseService {
     return this.http.delete(url);
   }
 
-  editExpense(expenseId: string, expenseData: any, oldExpenseData: any): Observable<any> {
+  editExpense(
+    expenseId: string,
+    expenseData: any,
+    oldExpenseData: any,
+  ): Observable<any> {
     const editUrl = `${this.expensesUrl}/${expenseId}`;
-    const combinedData = {expenseData:expenseData, oldExpenseData:oldExpenseData}
+    const combinedData = {
+      expenseData: expenseData,
+      oldExpenseData: oldExpenseData,
+    };
     return this.http.put(editUrl, combinedData);
   }
-  
 }

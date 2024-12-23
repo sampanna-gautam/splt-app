@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const expenseSchema = new mongoose.Schema({
   expenseName: {
@@ -7,7 +7,7 @@ const expenseSchema = new mongoose.Schema({
   },
   payer: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: "User",
     required: true,
   },
   expenseDate: {
@@ -39,4 +39,4 @@ const expenseSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('Expense', expenseSchema);
+module.exports = mongoose.model("Expense", expenseSchema);

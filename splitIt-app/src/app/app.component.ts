@@ -1,9 +1,15 @@
-import { Component, ElementRef, AfterViewInit, HostListener, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  AfterViewInit,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements AfterViewInit {
   @ViewChild('scrollToTopButton') scrollToTopButton!: ElementRef;
@@ -23,11 +29,9 @@ export class AppComponent implements AfterViewInit {
     const scrollPosition = window.scrollY;
 
     if (scrollPosition >= 100) {
-      this.scrollToTopButton.nativeElement.style.display = 'block'
+      this.scrollToTopButton.nativeElement.style.display = 'block';
     } else {
-      this.scrollToTopButton.nativeElement.style.display = 'none'
+      this.scrollToTopButton.nativeElement.style.display = 'none';
     }
-
   }
-
 }

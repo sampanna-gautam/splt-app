@@ -2,13 +2,18 @@ import { Component, Inject, ChangeDetectorRef } from '@angular/core';
 import { UsersService } from '../users.service';
 import { AuthService } from '../auth.service';
 import { DOCUMENT } from '@angular/common';
-import { ActivatedRoute, NavigationEnd, Router, RouterState } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationEnd,
+  Router,
+  RouterState,
+} from '@angular/router';
 import { InvitationService } from '../invitation.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css']
+  styleUrls: ['./home.component.css'],
 })
 export class HomeComponent {
   groups: any[] = [];
@@ -22,33 +27,35 @@ export class HomeComponent {
     private invitationsService: InvitationService,
     private router: Router,
     private cdr: ChangeDetectorRef,
-    @Inject(DOCUMENT) private document: Document
-    ) {
+    @Inject(DOCUMENT) private document: Document,
+  ) {
     this.loadUserGroups();
     this.handleRouteEvents();
   }
 
   ngOnInit(): void {
-    this.currentUser = this.authService.getCurrentUser()!
+    this.currentUser = this.authService.getCurrentUser()!;
     this.usersService.getUserInvitations(this.currentUser).subscribe({
       next: (invitations) => {
         this.invitations = invitations;
       },
       error: (error) => {
         console.error('Error fetching invitations:', error);
-      }
+      },
     });
   }
 
   loadUserGroups() {
-    this.usersService.getUserGroups(this.authService.getCurrentUser()!).subscribe({
-      next : (groups) => {
-        this.groups = groups;
-      },
-      error: (error) => {
-        console.error('Error loading user groups:', error.error.message);
-      }
-    });
+    this.usersService
+      .getUserGroups(this.authService.getCurrentUser()!)
+      .subscribe({
+        next: (groups) => {
+          this.groups = groups;
+        },
+        error: (error) => {
+          console.error('Error loading user groups:', error.error.message);
+        },
+      });
   }
 
   toggleCreateGroup() {
@@ -56,14 +63,17 @@ export class HomeComponent {
   }
 
   handleRouteEvents() {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        const title = this.getTitle(this.router.routerState, this.router.routerState.root).join('-');
+        const title = this.getTitle(
+          this.router.routerState,
+          this.router.routerState.root,
+        ).join('-');
         gtag('event', 'page_view', {
           page_title: title,
           page_path: event.urlAfterRedirects,
-          page_location: this.document.location.href
-        })
+          page_location: this.document.location.href,
+        });
       }
     });
   }
@@ -79,36 +89,41 @@ export class HomeComponent {
     return data;
   }
 
-  acceptInvitation(invitationId: string){
-    this.invitationsService.acceptInvitation(invitationId, this.currentUser).subscribe({
-      next : (response) => {
-        // console.log("Accepted", response.message)
-        this.router.navigate(['group', response.groupId ])
-      },
-      error: (error) => {
-        console.error('Error ', error.error.message);
-      }
-    });
+  acceptInvitation(invitationId: string) {
+    this.invitationsService
+      .acceptInvitation(invitationId, this.currentUser)
+      .subscribe({
+        next: (response) => {
+          // console.log("Accepted", response.message)
+          this.router.navigate(['group', response.groupId]);
+        },
+        error: (error) => {
+          console.error('Error ', error.error.message);
+        },
+      });
   }
 
-  declineInvitation(invitationId: string){
-    this.invitationsService.declineInvitation(invitationId, this.currentUser).subscribe({
-      next : (message) => {
-        console.log("Declined", message)
-        this.invitations = this.invitations.filter(invitation => invitation._id !== invitationId);
-        this.usersService.getUserInvitations(this.currentUser).subscribe({
-          next: (invitations) => {
-            this.invitations = invitations;
-          },
-          error: (error) => {
-            console.error('Error fetching invitations:', error);
-          }
-        });
-      },
-      error: (error) => {
-        console.error('Error ', error.error.message);
-      }
-    });
+  declineInvitation(invitationId: string) {
+    this.invitationsService
+      .declineInvitation(invitationId, this.currentUser)
+      .subscribe({
+        next: (message) => {
+          console.log('Declined', message);
+          this.invitations = this.invitations.filter(
+            (invitation) => invitation._id !== invitationId,
+          );
+          this.usersService.getUserInvitations(this.currentUser).subscribe({
+            next: (invitations) => {
+              this.invitations = invitations;
+            },
+            error: (error) => {
+              console.error('Error fetching invitations:', error);
+            },
+          });
+        },
+        error: (error) => {
+          console.error('Error ', error.error.message);
+        },
+      });
   }
-
 }

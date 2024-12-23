@@ -12,14 +12,15 @@ const routes: Routes = [
   { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'group/:groupId',
-    loadChildren: () => import('./group/group.module').then(m => m.GroupModule),
+    loadChildren: () =>
+      import('./group/group.module').then((m) => m.GroupModule),
     canActivate: [authGuard],
   },
-  { path: '', component: HomeComponent, canActivate: [authGuard]},
+  { path: '', component: HomeComponent, canActivate: [authGuard] },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

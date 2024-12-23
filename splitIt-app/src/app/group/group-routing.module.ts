@@ -14,13 +14,13 @@ const routes: Routes = [
       { path: 'add-expense', component: AddExpenseComponent },
       { path: 'list-expense', component: ListExpenseComponent },
       { path: 'add-member', component: AddMemberComponent },
-      { path: 'list-balance', component: ListBalanceComponent }
-    ]
+      { path: 'list-balance', component: ListBalanceComponent },
+    ],
   },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class GroupRoutingModule { }
+export class GroupRoutingModule {}

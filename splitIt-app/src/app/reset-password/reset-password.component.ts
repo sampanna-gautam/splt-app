@@ -5,7 +5,7 @@ import { ResetPasswordService } from './../reset-password.service';
 @Component({
   selector: 'app-reset-password',
   templateUrl: './reset-password.component.html',
-  styleUrls: ['./reset-password.component.css']
+  styleUrls: ['./reset-password.component.css'],
 })
 export class ResetPasswordComponent implements OnInit {
   formData = { email: '', otp: '', newPassword: '' };
@@ -15,8 +15,8 @@ export class ResetPasswordComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private resetPasswordService: ResetPasswordService
-  ) { }
+    private resetPasswordService: ResetPasswordService,
+  ) {}
 
   ngOnInit(): void {
     const email = this.route.snapshot.queryParamMap.get('email');
@@ -29,7 +29,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   sendResetOTP(): void {
-    this.errorMessage='';
+    this.errorMessage = '';
     this.resetPasswordService.sendResetOTP(this.formData.email).subscribe(
       (response: any) => {
         console.log(response);
@@ -37,13 +37,15 @@ export class ResetPasswordComponent implements OnInit {
       },
       (error: any) => {
         console.error('Error occurred:', error);
-        this.errorMessage = error.error.message || 'An error occurred while sending the reset OTP.';
-      }
+        this.errorMessage =
+          error.error.message ||
+          'An error occurred while sending the reset OTP.';
+      },
     );
   }
 
   resetPassword(): void {
-    this.errorMessage='';
+    this.errorMessage = '';
     if (this.resetComplete) {
       this.resetPasswordService.resetPassword(this.formData).subscribe(
         (response: any) => {
@@ -52,12 +54,13 @@ export class ResetPasswordComponent implements OnInit {
         },
         (error: any) => {
           console.error('Error occurred:', error);
-          this.errorMessage = error.error.message || 'An error occurred while resetting the password.';
-        }
+          this.errorMessage =
+            error.error.message ||
+            'An error occurred while resetting the password.';
+        },
       );
-    }
-    else{
-      this.errorMessage = 'Please generate new OTP and try again.'
+    } else {
+      this.errorMessage = 'Please generate new OTP and try again.';
     }
   }
 }
