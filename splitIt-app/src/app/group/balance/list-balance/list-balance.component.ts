@@ -4,6 +4,7 @@ import { AuthService } from 'src/app/auth.service';
 import { GroupService } from 'src/app/group.service';
 import { Group } from 'src/app/models/group.model';
 import { UsersService } from 'src/app/users.service';
+import { loadStripe } from '@stripe/stripe-js';
 
 @Component({
   selector: 'app-list-balance',
@@ -65,10 +66,11 @@ export class ListBalanceComponent {
     if (confirmed) {
       this.loading = true;
       this.settleSelectedBalance(index);
+      console.log('confirm shit');
     }
   }
 
-  settleSelectedBalance(index: any) {
+  async settleSelectedBalance(index: any) {
     const transactionId = this.groupDetails.balance[index]._id;
     this.groupService.settleBalance(this.groupId, transactionId).subscribe({
       next: (response) => {
@@ -79,5 +81,36 @@ export class ListBalanceComponent {
         console.error('Error settling balance:', error);
       },
     });
+    console.log('The balance obj is ');
+    console.log(this.groupDetails.balance[index].balance);
+    const response = await fetch(
+      `http://localhost:3000/api/expenses/stripe-payment`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: this.groupDetails.balance[index].balance,
+        }),
+        method: 'POST',
+      },
+    );
+    const data: { id: string } = await response.json();
+
+    const stripe = await loadStripe(
+      'pk_test_51QZNrY2NyVxsVGmveZIA96qJ7a6v8tGIYVkW7MhZd2naJKzTdrLHDRPEvTTWx9SW8tXAyVAQeM46qwqsf0BRFAW400fx2D7hj7',
+    );
+
+    if (!stripe) {
+      alert('could not do stripe shit');
+    } else {
+      const result = await stripe.redirectToCheckout({
+        sessionId: data.id,
+      });
+
+      if (result.error) {
+        alert(result.error.message);
+      }
+    }
   }
 }

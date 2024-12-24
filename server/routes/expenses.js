@@ -3,6 +3,7 @@ const router = express.Router();
 const Expense = require("../models/expense");
 const Group = require("../models/group");
 const User = require("../models/user");
+const stripe = require("stripe")(process.env.STRIPE_SECRET || "");
 
 // Find group by ID
 async function findGroupById(groupId) {
@@ -357,5 +358,33 @@ async function handleExpenseUpdate(req, res) {
   }
 }
 router.put("/:expenseId", handleExpenseUpdate);
+
+router.post("/stripe-payment", async function (req, res) {
+  const { amount } = req.body;
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "usd",
+            product_data: {
+              name: "Split It Balance Amount Payment",
+            },
+            unit_amount: Number(amount) * 100, // amount in cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "http://localhost:4200/success",
+      cancel_url: "http://localhost:4200/cancel",
+    });
+
+    res.json({ id: session.id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = router;
